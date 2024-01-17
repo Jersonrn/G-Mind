@@ -27,20 +27,12 @@ func backward():
 		var current_layer = self.grad_funcs[idx]
 
 		if "gradients_w" in current_layer:
-			#Updating gradients
-			var derivative_weights: Tensor = current_layer.derivative_respect_weights()
-
-			for n_o_idx in range(current_layer.out_features):
-				for n_i_idx in range(current_layer.in_features):
-					current_layer.gradients_w[n_o_idx][n_i_idx] += output.values[n_o_idx] * derivative_weights.values[n_i_idx]
-
-				current_layer.gradients_b[n_o_idx] += 1 * output.values[n_o_idx]
-
 			#Backpropagation
 			#The length of the weights for each node in the current layer (len(self.weights[0 | 1 | ...n]))
 			#matches the number of output nodes from the prev layer, which is precisely what we require at this point.
 			var n_nodes_out_prev_layer = len(current_layer.weights[0])
 
+			var derivative_weights: Tensor = current_layer.derivative_respect_weights()
 			var derivative_inputs: Tensor = current_layer.derivative_respect_inputs()
 
 			var new_total_derivative: Array = []
@@ -54,7 +46,14 @@ func backward():
 
 					new_node_derivative +=  weight * node_derivative 
 
+					#Updating weights gradients
+					current_layer.gradients_w[n_o_c_idx][n_o_p_idx] += output.values[n_o_c_idx] * derivative_weights.values[n_o_p_idx]
+
 				new_total_derivative.append(new_node_derivative)
+
+			#Updating bias gradients
+			for n_o_idx in range(current_layer.out_features):
+				current_layer.gradients_b[n_o_idx] += 1 * output.values[n_o_idx]
 
 			output.values = new_total_derivative
 		else:
