@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dee6k2vbd8oyk"]
+
+[ext_resource type="Script" path="res://demos/Celsius2Fahrenheit.gd" id="1_q623i"]
+
+[node name="Celsius2Fahrenheit" type="Node"]
+script = ExtResource("1_q623i")
