@@ -1,2 +1,7 @@
 # Godot 4+ specific ignores
 .godot/
+./godot/lib
+
+# Rust
+./rust/g-mind/target
+./rust/g-mind/Cargo.lock

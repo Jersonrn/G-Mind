@@ -1,12 +1,12 @@
 extends Node
 
 
-var xx = [-40., -20.,  0., 20., 40.,  60.,  80.]
-var yy = [-40.,  -4., 32., 68., 104., 140., 176.]
+var xx = [-40., -20.,  0., 20., 40.,  60.,  80.]#Celsius
+var yy = [-40.,  -4., 32., 68., 104., 140., 176.]#Fahrenheit
 
 
 var Net = Module.new([
-	Dense.new(1, 1),
+	Dense.create(1, 1),
 	])
 
 
@@ -41,10 +41,10 @@ func _ready():
 			if (epoch + 1) % 100 == 0:
 				print("Epoch [", epoch+1./num_epochs, "] Loss: ", loss.values)
 	
-	var y_t = Tensor.new([75./100.])
+	var y_t = Tensor.new([75./100.])#Celsius
 
 	var pred: Tensor = Net.forward(y_t)
-	print(pred.values[0]*100.)
+	print(pred.values[0]*100.)#Fahrenheit
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

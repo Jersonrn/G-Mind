@@ -15,6 +15,11 @@ func _ready():
 	pass
 
 
+func _to_string():
+	return "MSELoss(outputs={outputs})".format({"outputs":outputs})
+	
+
+
 func forward(y_hat_: Tensor, y_: Tensor) -> Tensor:
 	self.y_hat = y_hat_; self.y = y_
 

@@ -15,9 +15,10 @@ func _ready():
 
 func forward(x: Tensor) -> Tensor:
 	var xx: Tensor = x.duplicate()
-
+	
 	for layer in self.layers:
-		xx = layer.forward(xx)
+		xx.values = layer.forward(PackedFloat32Array(xx.values))
+		xx.add_grad_func(layer)
 
 	return xx
 

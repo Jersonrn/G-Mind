@@ -1,4 +1,5 @@
-class_name Dense
+class_name DenseOld
+extends RefCounted
 
 
 var in_features:  int = 1
