@@ -19,8 +19,10 @@ func append(x):
 	self.values.append(x)
 
 
-func backward():
+func backward(batch_size_):
 	assert(!self.grad_funcs.is_empty(),"No 'grad_funcs' found for this Tensor")
+
+	var factor := float(1./batch_size_)
 
 	var output: Tensor = self.grad_funcs[-1].calculate_derivative().ones_like()
 
@@ -48,13 +50,13 @@ func backward():
 
 					#Updating weights gradients
 					var a = current_layer.gradients_w
-					current_layer.gradients_w[n_o_c_idx][n_o_p_idx] += output.values[n_o_c_idx] * derivative_weights.values[n_o_p_idx]
+					current_layer.gradients_w[n_o_c_idx][n_o_p_idx] += ( output.values[n_o_c_idx] * derivative_weights.values[n_o_p_idx] ) * factor
 
 				new_total_derivative.append(new_node_derivative)
 
 			#Updating bias gradients
 			for n_o_idx in range(current_layer.out_features):
-				current_layer.gradients_b[n_o_idx] += 1 * output.values[n_o_idx]
+				current_layer.gradients_b[n_o_idx] += ( 1 * output.values[n_o_idx] ) * factor
 
 			output.values = new_total_derivative
 		else:

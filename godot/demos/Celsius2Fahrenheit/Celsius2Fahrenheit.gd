@@ -24,9 +24,15 @@ func _ready():
 	print(yy)
 	print("---------------------------------")
 
-	var num_epochs = 1000.
+	var epochs = 1000.
+	var batch_size = 1
+	var learning_rate = 0.01
 
-	for epoch in range(num_epochs):
+	var count = 0
+
+	for epoch in range(epochs):
+		var epoch_loss = 0.
+
 		for i in range(len(xx)):
 			var x: Tensor = Tensor.new([ xx[i] ])
 			var y: Tensor = Tensor.new([ yy[i] ])
@@ -34,17 +40,26 @@ func _ready():
 			var y_hat = Net.forward(x)
 
 			var loss: Tensor = mse_loss.forward(y_hat, y)
-			loss.backward()
+			epoch_loss += loss.values[0]
+			loss.backward(batch_size)
 
-			Net.step(0.01, true)
+			count += 1
 
-			if (epoch + 1) % 100 == 0:
-				print("Epoch [", epoch+1./num_epochs, "] Loss: ", loss.values)
+			if count % batch_size == 0:
+				Net.step(learning_rate, true)
+
+
+		if (epoch + 1) % 10 == 0:
+			print("Epoch [", epoch + 1., "] Loss: ", epoch_loss / len(xx))
 	
-	var y_t = Tensor.new([75./100.])#Celsius
 
-	var pred: Tensor = Net.forward(y_t)
-	print(pred.values[0]*100.)#Fahrenheit
+	var x = Tensor.new([75./100.])#Celsius
+
+	var pred: Tensor = Net.forward(x)
+
+	print("X = {x_values} -- Y = 167 -- Y_HAT = {y_hat_values}".format(
+		{ "x_values": x.values[0] * 100., "y_hat_values": pred.values[0] * 100. }
+		))
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
