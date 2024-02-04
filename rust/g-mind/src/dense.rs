@@ -53,13 +53,14 @@ impl IRefCounted for Dense {
     }
 
     fn to_string(&self) -> GString {
-        let Self { in_features, out_features, weights, biases, .. } = &self;
+        let Self {
+            in_features, out_features,
+            weights, biases,
+            .. } = &self;
         format!("Dense(
-                in_features={in_features},
-                out_features={out_features},
-                weights={weights},
-                biases={biases})",
-            ).into()
+                in_features={in_features}, out_features={out_features},
+                weights={weights}, biases={biases},
+            )",).into()
     }
 
 }
@@ -68,43 +69,67 @@ impl IRefCounted for Dense {
 impl Dense {
     #[func]
     fn apply_gradients(&mut self, lr: f32, clean_grad: bool) {
+        // TODO: The line "self.gradients_w.get(node_out_index).fill(0.)" doesn't work because "get" returns the value of an index and doesn't function like a "slice."
+        // I've also encountered difficulty transforming a "vec" into a "Godot array."
+        // Consequently, I found it necessary to create the variables:
+        // [zero_layer_gradients_w, zero_layer_gradients_b, zero_node_gradients_w, zero_node_gradients_b].
+        // I'll refine this as soon as I have the time and opportunity.
+
         let mut new_layer_weights: Array<PackedFloat32Array> = array![];
         let mut new_layer_biases = PackedFloat32Array::new();
+
+        let mut zero_layer_gradients_w: Array<PackedFloat32Array> = array![];
+        let mut zero_layer_gradients_b = PackedFloat32Array::new();
 
         for node_out_index in 0..self.weights.len() {
             let node_weights: PackedFloat32Array = self.weights.get(node_out_index);
 
-            let mut new_node_gradients_w = PackedFloat32Array::new();
-            let mut new_node_gradients_b = 0.;
+            let mut new_node_weights = PackedFloat32Array::new();
+            let mut new_node_biases = 0.;
+
+            let mut zero_node_gradients_w = PackedFloat32Array::new();
+            let mut zero_node_gradients_b = 0.;
 
             for node_in_index in 0..node_weights.len() {
                 let weight = self.weights.get(node_out_index).get(node_in_index);
                 let gradient_w = self.gradients_w.get(node_out_index).get(node_in_index);
 
-                new_node_gradients_w.push( weight - (gradient_w * lr) );
+                new_node_weights.push( weight - (gradient_w * lr) );
+                zero_node_gradients_w.push(0.);
             };
 
             let bias = self.biases.get(node_out_index);
             let gradient_b = self.gradients_b.get(node_out_index);
 
-            new_node_gradients_b = bias - (gradient_b * lr);
+            new_node_biases = bias - (gradient_b * lr);
+            zero_node_gradients_b = 0.;
 
 
-            new_layer_weights.push(new_node_gradients_w);
-            new_layer_biases.push(new_node_gradients_b);
+            new_layer_weights.push(new_node_weights);
+            new_layer_biases.push(new_node_biases);
 
             if clean_grad == true {
-                self.gradients_w.get(node_out_index).fill(0.)
+                zero_layer_gradients_w.push(zero_node_gradients_w);
+                zero_layer_gradients_b.push(zero_node_gradients_b);
                 
             }
+
+            // if clean_grad == true {
+            //     self.gradients_w.get(node_out_index).fill(0.)
+                
+            // }
         };
 
         self.weights = new_layer_weights;
         self.biases = new_layer_biases;
 
-        if clean_grad == true {
-            self.gradients_b.fill(0.);
-        }
+        self.gradients_w = zero_layer_gradients_w;
+        self.gradients_b = zero_layer_gradients_b;
+
+
+        // if clean_grad == true {
+        //     self.gradients_b.fill(0.);
+        // }
 
     }
 
@@ -189,7 +214,9 @@ impl Dense {
     #[func]
     fn set_randf_weights_bias_and_zero_gradients(&mut self) {
         let mut rng = RandomNumberGenerator::new_gd();
+        // rng.set_seed(4555);
         rng.randomize();
+        // let seed = rng.get_seed();
 
         for out_features_index in 0..self.out_features {
             let mut node_out_weights: PackedFloat32Array = PackedFloat32Array::new();
@@ -206,6 +233,27 @@ impl Dense {
             self.gradients_w.push(row_gradients);
             self.gradients_b.push(0.)
         }
+        
+    }
+
+    #[func]
+    fn gradients_2_zero(&mut self) {
+        let mut zero_weights_grad: Array<PackedFloat32Array> = Array::new();
+        let mut zero_biases_grad: PackedFloat32Array = PackedFloat32Array::new();
+
+        for out_features_index in 0..self.out_features {
+            let mut row_gradients: PackedFloat32Array = PackedFloat32Array::new();
+
+            for in_features_index in 0..self.in_features {
+                row_gradients.push(0.);
+                
+            }
+            zero_weights_grad.push(row_gradients);
+            zero_biases_grad.push(0.)
+            
+        }
+        self.gradients_w = zero_weights_grad;
+        self.gradients_b = zero_biases_grad;
         
     }
 

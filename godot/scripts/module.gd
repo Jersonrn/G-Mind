@@ -25,9 +25,7 @@ func forward(x: Tensor) -> Tensor:
 
 func gradients_to_zero():
 	for layer in self.layers:
-		for c_g_w in layer.gradients_w:
-			c_g_w.fill(0)
-		layer.gradients_b.fill(0)
+		layer.gradients_2_zero()
 
 
 #apply_gradients
