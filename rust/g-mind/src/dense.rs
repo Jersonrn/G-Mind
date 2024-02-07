@@ -56,10 +56,14 @@ impl IRefCounted for Dense {
         let Self {
             in_features, out_features,
             weights, biases,
+            gradients_w, gradients_b,
             .. } = &self;
         format!("Dense(
                 in_features={in_features}, out_features={out_features},
-                weights={weights}, biases={biases},
+                weights={weights},
+                biases={biases},
+                gradient_w={gradients_w},
+                gradient_b={gradients_b},
             )",).into()
     }
 
@@ -108,11 +112,8 @@ impl Dense {
             new_layer_weights.push(new_node_weights);
             new_layer_biases.push(new_node_biases);
 
-            if clean_grad == true {
-                zero_layer_gradients_w.push(zero_node_gradients_w);
-                zero_layer_gradients_b.push(zero_node_gradients_b);
-                
-            }
+            zero_layer_gradients_w.push(zero_node_gradients_w);
+            zero_layer_gradients_b.push(zero_node_gradients_b);
 
             // if clean_grad == true {
             //     self.gradients_w.get(node_out_index).fill(0.)
@@ -123,8 +124,10 @@ impl Dense {
         self.weights = new_layer_weights;
         self.biases = new_layer_biases;
 
-        self.gradients_w = zero_layer_gradients_w;
-        self.gradients_b = zero_layer_gradients_b;
+        if clean_grad == true {
+            self.gradients_w = zero_layer_gradients_w;
+            self.gradients_b = zero_layer_gradients_b;
+        }
 
 
         // if clean_grad == true {

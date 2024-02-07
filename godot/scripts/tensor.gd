@@ -10,6 +10,8 @@ func _init(values_: Array = [], grad_funcs_: Array = []):
 	self.values = values_
 	self.grad_funcs = grad_funcs_
 
+func _to_string():
+	return "Tensor(values={values})".format({"values":self.values})
 
 func add_grad_func(grad_func):
 	self.grad_funcs.append(grad_func)
