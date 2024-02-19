@@ -163,6 +163,56 @@ impl Dense {
     }
 
     #[func]
+    fn calculate_gradient_norm(&mut self) -> f32 {
+        let mut grad_norm: f32 = 0.;
+
+        for i in 0..self.gradients_w.len(){
+            let node_grad_weights: PackedFloat32Array = self.gradients_w.get(i);
+
+            for j in 0..node_grad_weights.len() {
+                let grad_weight: f32 = node_grad_weights.get(j);
+
+                grad_norm += grad_weight * grad_weight;
+                
+            }
+
+            let grad_bias: f32 = self.gradients_b.get(i);
+
+            grad_norm += grad_bias * grad_bias;
+
+        }
+
+        grad_norm
+        
+    }
+
+    #[func]
+    fn normalize_gradients(&mut self, factor: f32,) {
+        let mut norm_grad_weights: Array<PackedFloat32Array> = Array::new();
+        let mut norm_grad_biases: PackedFloat32Array = PackedFloat32Array::new();
+
+        for i in 0..self.gradients_w.len() {
+            let node_grad_weights: PackedFloat32Array = self.gradients_w.get(i);
+
+            let mut norm_row_grads: PackedFloat32Array = PackedFloat32Array::new();  //row of the weights
+
+            for j in 0..node_grad_weights.len() {
+                let weight_grad: f32 = node_grad_weights.get(j);
+
+                norm_row_grads.push(factor * weight_grad);
+                
+            }
+            let bias_grad: f32 = self.gradients_b.get(i);
+
+            norm_grad_weights.push(norm_row_grads);
+            norm_grad_biases.push(factor * bias_grad)
+            
+        }
+        self.gradients_w = norm_grad_weights;
+        self.gradients_b = norm_grad_biases;
+    }
+
+    #[func]
     fn create(in_features_: i8, out_features_: i8) -> Gd<Dense> {
         Gd::from_init_fn(|base| {
             let mut dense_instance = Self {

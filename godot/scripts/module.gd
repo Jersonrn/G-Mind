@@ -24,13 +24,29 @@ func forward(x: Tensor) -> Tensor:
 
 	return xx
 
+func clip_gradients(max_norm: float = 1.0):
+	var norm = 0.
+
+	for layer in layers:
+		if "gradients_w" in layer:
+			norm += layer.calculate_gradient_norm()
+	
+	if norm > max_norm:
+		var factor = max_norm / norm
+
+		for layer in layers:
+			if "gradients_w" in layer:
+				layer.normalize_gradients(factor)
+
 
 func gradients_to_zero():
 	for layer in self.layers:
-		layer.gradients_2_zero()
+		if "gradients_w" in layer:
+			layer.gradients_2_zero()
 
 
 #apply_gradients
 func step(learn_rate = 0.001, grad_to_zero: bool = false):
 	for layer in self.layers:
-		layer.apply_gradients(learn_rate, grad_to_zero)
+		if "gradients_w" in layer:
+			layer.apply_gradients(learn_rate, grad_to_zero)
