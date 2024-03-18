@@ -13,4 +13,14 @@ config_version=5
 config/name="Oxido"
 run/main_scene="res://scenes/main.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
+run/low_processor_mode=true
 config/icon="res://icon.svg"
+
+[autoload]
+
+utils="*res://scripts/utils.gd"
+
+[display]
+
+window/size/viewport_width=600
+window/size/viewport_height=450
