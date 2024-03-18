@@ -1,0 +1,140 @@
+[gd_scene load_steps=17 format=3 uid="uid://cckrkc8pyekhi"]
+
+[ext_resource type="Script" path="res://demos/binary_classification/scripts/main.gd" id="1_1r405"]
+[ext_resource type="PackedScene" uid="uid://n86yuiyp0ib4" path="res://demos/binary_classification/scenes/blue.tscn" id="1_my466"]
+[ext_resource type="PackedScene" uid="uid://qulww01g5ha7" path="res://demos/binary_classification/scenes/red.tscn" id="2_tbacb"]
+[ext_resource type="Texture2D" uid="uid://b4ogk4g5gle1g" path="res://demos/binary_classification/images/void_circle.png" id="4_b5t3a"]
+[ext_resource type="FontFile" uid="uid://cobis3ib7xbh7" path="res://demos/Celsius2Fahrenheit/fonts/JetBrainsMonoNerdFont-Bold.ttf" id="4_d61um"]
+[ext_resource type="Script" path="res://scripts/plotter.gd" id="5_i4yjw"]
+[ext_resource type="Texture2D" uid="uid://dfkgd84f7hoow" path="res://demos/binary_classification/images/red.png" id="5_koeuy"]
+[ext_resource type="Texture2D" uid="uid://drmhp47c7r7fo" path="res://demos/binary_classification/images/blue.png" id="6_84qse"]
+
+[sub_resource type="InputEventKey" id="InputEventKey_icfmq"]
+device = -1
+keycode = 66
+unicode = 98
+
+[sub_resource type="Shortcut" id="Shortcut_pcwak"]
+events = [SubResource("InputEventKey_icfmq")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_fm0lj"]
+device = -1
+keycode = 69
+unicode = 101
+
+[sub_resource type="Shortcut" id="Shortcut_r5dx3"]
+events = [SubResource("InputEventKey_fm0lj")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_x7reu"]
+device = -1
+keycode = 83
+unicode = 115
+
+[sub_resource type="Shortcut" id="Shortcut_1rikc"]
+events = [SubResource("InputEventKey_x7reu")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_iftpf"]
+device = -1
+keycode = 32
+unicode = 32
+
+[sub_resource type="Shortcut" id="Shortcut_k527j"]
+events = [SubResource("InputEventKey_iftpf")]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_1r405")
+red_scene = ExtResource("2_tbacb")
+blue_scene = ExtResource("1_my466")
+metadata/_edit_lock_ = true
+
+[node name="Void_" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("4_b5t3a")
+
+[node name="left_panel" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 114.0
+offset_bottom = 225.0
+
+[node name="VSplitContainer" type="VSplitContainer" parent="left_panel"]
+layout_mode = 2
+
+[node name="tools" type="VBoxContainer" parent="left_panel"]
+layout_mode = 2
+metadata/_edit_lock_ = true
+
+[node name="brush" type="Button" parent="left_panel/tools"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_d61um")
+theme_override_font_sizes/font_size = 50
+toggle_mode = true
+shortcut = SubResource("Shortcut_pcwak")
+text = ""
+
+[node name="VSplitContainer2" type="VSplitContainer" parent="left_panel/tools"]
+layout_mode = 2
+
+[node name="erase" type="Button" parent="left_panel/tools"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_d61um")
+theme_override_font_sizes/font_size = 50
+toggle_mode = true
+shortcut = SubResource("Shortcut_r5dx3")
+text = "󰇾"
+
+[node name="VSplitContainer2" type="VSplitContainer" parent="left_panel"]
+layout_mode = 2
+
+[node name="class_selector" type="OptionButton" parent="left_panel"]
+layout_mode = 2
+shortcut = SubResource("Shortcut_1rikc")
+item_count = 2
+selected = 0
+popup/item_0/text = "RED"
+popup/item_0/icon = ExtResource("5_koeuy")
+popup/item_0/id = 0
+popup/item_1/text = "BLUE"
+popup/item_1/icon = ExtResource("6_84qse")
+popup/item_1/id = 1
+
+[node name="Plotter" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -400.0
+offset_bottom = 400.0
+grow_horizontal = 0
+script = ExtResource("5_i4yjw")
+width = 100
+height = 100
+expand = 4
+cartesian_coordinate = Vector2(50, 50)
+
+[node name="classes" type="Node" parent="."]
+
+[node name="reds" type="Node" parent="classes"]
+
+[node name="blues" type="Node" parent="classes"]
+
+[node name="train" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -57.0
+offset_right = 95.0
+grow_vertical = 0
+toggle_mode = true
+shortcut = SubResource("Shortcut_k527j")
+text = "TRAIN!"
+
+[connection signal="toggled" from="left_panel/tools/brush" to="." method="_on_brush_toggled"]
+[connection signal="toggled" from="left_panel/tools/erase" to="." method="_on_erase_toggled"]
+[connection signal="toggled" from="train" to="." method="_on_train_toggled"]

@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://qulww01g5ha7"]
+
+[ext_resource type="Texture2D" uid="uid://dfkgd84f7hoow" path="res://demos/binary_classification/images/red.png" id="1_k0kd5"]
+
+[node name="Red" type="Node2D" groups=["red"]]
+
+[node name="img" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(-12, -12)
+texture = ExtResource("1_k0kd5")
+centered = false

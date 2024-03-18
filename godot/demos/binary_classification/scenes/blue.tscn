@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://n86yuiyp0ib4"]
+
+[ext_resource type="Texture2D" uid="uid://drmhp47c7r7fo" path="res://demos/binary_classification/images/blue.png" id="1_5pixd"]
+
+[node name="Blue" type="Node2D" groups=["blue"]]
+
+[node name="img" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(-12, -12)
+texture = ExtResource("1_5pixd")
+centered = false
