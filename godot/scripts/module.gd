@@ -1,4 +1,4 @@
-class_name Module
+class_name Sequential
 extends Node
 
 
@@ -13,7 +13,7 @@ func _ready():
 	pass
 
 func _to_string():
-	return "Module(layers={layers})".format({"layers":layers})
+	return "Sequential(layers={layers})".format({"layers":layers})
 
 func forward(x: Tensor) -> Tensor:
 	var xx: Tensor = x.duplicate()

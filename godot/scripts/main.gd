@@ -4,7 +4,7 @@ extends Node
 var x = Tensor.new([8, 9])
 var y = Tensor.new([3])
 
-var Net = Module.new([
+var Net = Sequential.new([
 	Dense.create(2, 3),
 	Dense.create(3, 1),
 	])

@@ -27,7 +27,7 @@ enum Tools {
 var dragging = false
 
 
-var model = Module.new([
+var model = Sequential.new([
 	Dense.create(2, 15),
 	LeakyRelu.new(),
 	Dense.create(15, 15),

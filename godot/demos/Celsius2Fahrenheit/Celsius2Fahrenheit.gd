@@ -5,7 +5,7 @@ var xx = [-40., -20.,  0., 20., 40.,  60.,  80.]#Celsius
 var yy = [-40.,  -4., 32., 68., 104., 140., 176.]#Fahrenheit
 
 
-var Net = Module.new([
+var Net = Sequential.new([
 	Dense.create(1, 1),
 	])
 
