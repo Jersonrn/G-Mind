@@ -4,4 +4,4 @@ compatibility_minimum = 4.2
 
 [libraries]
 linux.debug.x86_64 = "res://../rust/g-mind/target/debug/libg_mind.so"
-linux.release.x86_64 = "res//lib/libg_mind.so"
+linux.release.x86_64 = "res://lib/libg_mind.so"
