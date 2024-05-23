@@ -105,6 +105,10 @@ func size():
 	return len(self.values)
 
 
+func to_packedfloat32array():
+	return PackedFloat32Array(self.values)
+
+
 func ones_like() -> Tensor:
 	var val: Array = []
 	val.resize( self.size() )
