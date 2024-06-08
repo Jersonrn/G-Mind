@@ -244,11 +244,18 @@ impl Dense {
     }
 
     #[func]
-    fn from_data(weights_:Array<PackedFloat32Array>, biases_: PackedFloat32Array) -> Gd<Dense>{
+    fn from_data(
+        in_features_: i8,
+        out_features_: i8,
+        weights_: Array<PackedFloat32Array>,
+        biases_: PackedFloat32Array,
+        gradients_w_: Array<PackedFloat32Array>,
+        gradients_b_: PackedFloat32Array,
+        ) -> Gd<Dense>{
         Gd::from_init_fn(|base| {
             Self {
-                in_features: 1,
-                out_features: 1,
+                in_features: in_features_,
+                out_features: out_features_,
 
                 inputs: PackedFloat32Array::new(),
                 outputs: PackedFloat32Array::new(),
@@ -256,8 +263,8 @@ impl Dense {
                 weights: weights_,
                 biases: biases_,
 
-                gradients_w: array![],
-                gradients_b: PackedFloat32Array::new(),
+                gradients_w: gradients_w_,
+                gradients_b: gradients_b_,
 
                 base,
             }
