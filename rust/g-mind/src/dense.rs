@@ -236,6 +236,20 @@ impl Dense {
         })
     }
 
+    #[func]
+    fn save(&self,) -> Dictionary {
+        let data = dict! {
+            "type": "Dense",
+            "in_features": self.in_features,
+            "out_features": self.out_features,
+            "weights": self.weights.clone(),
+            "biases": self.biases.clone(),
+            "gradients_w": self.gradients_w.clone(),
+            "gradients_b": self.gradients_b.clone(),
+        };
+
+        data
+    }
 
     #[func]
     fn set_data(&mut self, weights_:Array<PackedFloat32Array>,biases_: PackedFloat32Array) {

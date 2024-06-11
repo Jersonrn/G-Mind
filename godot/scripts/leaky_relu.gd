@@ -6,8 +6,12 @@ class_name LeakyRelu
 var inputs : PackedFloat32Array
 
 
-func _init(negative_slope_: float = 0.01):
+func _init(
+		negative_slope_: float = 0.01,
+		inputs_: PackedFloat32Array = [],
+		):
 	self.negative_slope = negative_slope_
+	self.inputs = inputs_
 
 
 func _ready():
@@ -38,3 +42,11 @@ func calculate_derivative() -> Tensor:
 
 	return output
 
+func save():
+	var data = {
+			"type": "LeakyRelu",
+			"negative_slope": self.negative_slope,
+			"inputs": self.inputs
+			}
+
+	return data

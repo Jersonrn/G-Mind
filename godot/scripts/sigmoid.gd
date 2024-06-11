@@ -3,8 +3,8 @@ class_name  Sigmoid
 
 var inputs : PackedFloat32Array
 
-func _init():
-	pass
+func _init(inputs_: PackedFloat32Array = []):
+	self.inputs = inputs_
 
 
 func _ready():
@@ -32,3 +32,10 @@ func calculate_derivative() -> Tensor:
 
 	return  output
 
+func save():
+	var data = {
+			"type": "Sigmoid",
+			"inputs": self.inputs
+			}
+
+	return data

@@ -20,15 +20,22 @@ var gb: PackedFloat32Array = [0., 0., 0.]
 
 
 var Net = Sequential.new([
-	Dense.create(2, 3),
 	Dense.create(3, 1),
+	Sigmoid.new(),
 	Dense.from_data(2, 3, w, b, gw, gb),
+	LeakyRelu.new(0.1)
 	])
 
 
 var mse_loss = MSELoss.new()
 
 func _ready():
+	Net.save_model()
+	print(Net)
+	print("***********************************")
+
+	Net.layers = []
+	Net.load_model()
 	print(Net)
 
 	# self.do()

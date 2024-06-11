@@ -44,6 +44,85 @@ func gradients_to_zero():
 		if "gradients_w" in layer:
 			layer.gradients_2_zero()
 
+func save_model(path: String = "res://models/model.gmind"):
+	var save_model = FileAccess.open(path, FileAccess.WRITE)
+
+	for idx in range(len(self.layers)):
+		var layer = self.layers[idx]
+		var layer_data = layer.save()
+
+		var json_string = JSON.stringify(layer_data)
+
+		save_model.store_line(json_string)
+
+
+func load_model(path: String = "res://models/model.gmind"):
+	if not FileAccess.file_exists(path):
+		return # Error! We don't have a save to load.
+
+	var save_model = FileAccess.open(path, FileAccess.READ)
+
+	while save_model.get_position() < save_model.get_length():
+		var json_string = save_model.get_line()
+
+		# Creates the helper class to interact with JSON
+		var json = JSON.new()
+
+		# Check if there is any error while parsing the JSON string, skip in case of failure
+		var parse_result = json.parse(json_string)
+		if not parse_result == OK:
+			print("JSON Parse Error: ", json.get_error_message(), " in ", json_string, " at line ", json.get_error_line())
+			continue
+
+		# Get the data from the JSON object
+		var layer_data = json.get_data()
+
+		if layer_data["type"] == "Dense":
+			var in_features = int(layer_data["in_features"])
+			var out_features = int(layer_data["out_features"])
+
+			var weights: Array[PackedFloat32Array]
+			for packedf32array in layer_data["weights"]:
+				weights.append(PackedFloat32Array(packedf32array))
+
+			var biases: PackedFloat32Array = layer_data["biases"]
+
+			var gradients_w: Array[PackedFloat32Array]
+			for packedf32array in layer_data["gradients_w"]:
+				gradients_w.append(PackedFloat32Array(packedf32array))
+
+			var gradients_b: PackedFloat32Array = layer_data["gradients_b"]
+			
+
+			self.layers.append(
+					Dense.from_data(
+						in_features,
+						out_features,
+						weights,
+						biases,
+						gradients_w,
+						gradients_b,
+						)
+					)
+		elif layer_data["type"] == "Sigmoid":
+			var inputs: PackedFloat32Array = layer_data["inputs"]
+
+			self.layers.append(
+					Sigmoid.new(
+						inputs
+						)
+					)
+		elif layer_data["type"] == "LeakyRelu":
+			var inputs: PackedFloat32Array = layer_data["inputs"]
+			var negative_slope: float = layer_data["negative_slope"]
+
+			self.layers.append(
+					LeakyRelu.new(
+						negative_slope,
+						inputs
+						)
+					)
+	
 
 #apply_gradients
 func step(learn_rate = 0.001, grad_to_zero: bool = false):
