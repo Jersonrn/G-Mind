@@ -1,8 +1,8 @@
 class_name Utils
 extends RefCounted
 
-func linspace(start: float = -1, stop: float = 1, num: int = 100) -> Array:
-	var res: Array = []
+func linspace(start: float = -1., stop: float = 1., num: int = 100) -> PackedFloat32Array:
+	var res: PackedFloat32Array = []
 	var step: float = (stop - start) / (num - 1)
 	for i in range(num): res.append(start + i * step)
 
