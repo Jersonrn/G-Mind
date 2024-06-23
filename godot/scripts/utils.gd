@@ -28,3 +28,15 @@ func is_all_close(a: PackedFloat32Array, b: PackedFloat32Array, rtol: float =1e-
 			return false
 	
 	return true
+
+func load_data(path: String):
+	if not FileAccess.file_exists(path):
+		return # Error! We don't have a save to load.
+
+	var data = FileAccess.open(path, FileAccess.READ)
+	var json_string = data.get_as_text()
+
+	var json = JSON.new()
+	var parse_result = json.parse_string(json_string)
+
+	return parse_result
