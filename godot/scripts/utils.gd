@@ -20,7 +20,6 @@ func all_close(a: PackedFloat32Array, b: PackedFloat32Array, rtol: float =1e-05,
 	for idx in range(len(a)):
 		var x: float = a[idx]
 		var y: float = b[idx]
-		print(idx, " -- ",x, " -- ", y)
 
 		if not abs(x - y) <= (atol + rtol * abs(y)):
 			return false
