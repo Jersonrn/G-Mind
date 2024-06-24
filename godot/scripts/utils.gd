@@ -8,23 +8,21 @@ func linspace(start: float = -1., stop: float = 1., num: int = 100) -> PackedFlo
 
 	return res
 
-func is_close(a: float, b: float, rtol: float, atol: float):
-	if a == b: return true
+func is_close(a: float, b: float, rtol: float =1e-05, atol: float =1e-08):
+	if abs(a - b) <= (atol + rtol * abs(b)):
+		return true
+	else:
+		return false
 
-	var diff = abs(a - b)
-	if diff <= atol: return true
-
-	if diff <= rtol * max(abs(a), abs(b)): return true
-	else: return false
-
-func is_all_close(a: PackedFloat32Array, b: PackedFloat32Array, rtol: float =1e-5, atol: float =1e-8):
+func all_close(a: PackedFloat32Array, b: PackedFloat32Array, rtol: float =1e-05, atol: float =1e-08):
 	assert(len(a) == len(b),"The sizes of 'a' and 'b' must be equal")
 
 	for idx in range(len(a)):
 		var x: float = a[idx]
 		var y: float = b[idx]
+		print(idx, " -- ",x, " -- ", y)
 
-		if not is_close(x, y, rtol, atol):
+		if not abs(x - y) <= (atol + rtol * abs(y)):
 			return false
 	
 	return true
