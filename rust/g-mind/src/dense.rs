@@ -7,9 +7,9 @@ use godot::engine::{IRefCounted, RandomNumberGenerator};
 #[class(base=RefCounted)]
 pub struct  Dense {
     #[var]
-    in_features: i8,
+    in_features: u32,
     #[var]
-    out_features: i8,
+    out_features: u32,
 
     #[var]
     inputs: PackedFloat32Array,
@@ -213,7 +213,7 @@ impl Dense {
     }
 
     #[func]
-    fn create(in_features_: i8, out_features_: i8, seed: u64) -> Gd<Dense> {
+    fn create(in_features_: u32, out_features_: u32, seed: u64) -> Gd<Dense> {
         Gd::from_init_fn(|base| {
             let mut dense_instance = Self {
                 in_features: in_features_,
@@ -260,8 +260,8 @@ impl Dense {
 
     #[func]
     fn from_data(
-        in_features_: i8,
-        out_features_: i8,
+        in_features_: u32,
+        out_features_: u32,
         weights_: Array<PackedFloat32Array>,
         biases_: PackedFloat32Array,
         gradients_w_: Array<PackedFloat32Array>,
