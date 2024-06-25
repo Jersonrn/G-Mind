@@ -213,7 +213,7 @@ impl Dense {
     }
 
     #[func]
-    fn create(in_features_: i8, out_features_: i8) -> Gd<Dense> {
+    fn create(in_features_: i8, out_features_: i8, seed: u64) -> Gd<Dense> {
         Gd::from_init_fn(|base| {
             let mut dense_instance = Self {
                 in_features: in_features_,
@@ -230,7 +230,8 @@ impl Dense {
 
                 base,
             };
-            dense_instance.set_randf_weights_bias_and_zero_gradients();
+
+            dense_instance.set_randf_weights_bias_and_zero_gradients(seed);
 
             dense_instance //return
         })
@@ -286,11 +287,11 @@ impl Dense {
     }
 
     #[func]
-    fn set_randf_weights_bias_and_zero_gradients(&mut self) {
+    fn set_randf_weights_bias_and_zero_gradients(&mut self, seed: u64) {
         let mut rng = RandomNumberGenerator::new_gd();
-        // rng.set_seed(4555);
-        rng.randomize();
-        // let seed = rng.get_seed();
+
+        rng.set_seed(seed);
+        // rng.randomize();
 
         for out_features_index in 0..self.out_features {
             let mut node_out_weights: PackedFloat32Array = PackedFloat32Array::new();
