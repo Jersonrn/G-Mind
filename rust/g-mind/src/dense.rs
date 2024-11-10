@@ -86,7 +86,7 @@ impl Dense {
         let mut zero_layer_gradients_b = PackedFloat32Array::new();
 
         for node_out_index in 0..self.weights.len() {
-            let node_weights: PackedFloat32Array = self.weights.get(node_out_index);
+            let node_weights: PackedFloat32Array = self.weights.get(node_out_index).expect("Index out of bounds");
 
             let mut new_node_weights = PackedFloat32Array::new();
             let mut new_node_biases = 0.;
@@ -95,15 +95,17 @@ impl Dense {
             let mut zero_node_gradients_b = 0.;
 
             for node_in_index in 0..node_weights.len() {
-                let weight = self.weights.get(node_out_index).get(node_in_index);
-                let gradient_w = self.gradients_w.get(node_out_index).get(node_in_index);
+                let weight: f32 = self.weights.get(node_out_index)
+                    .and_then(|w| w.get(node_in_index)).expect("Index out of bounds");
+                let gradient_w = self.gradients_w.get(node_out_index)
+                    .and_then(|g| g.get(node_in_index)).expect("Index out bounds");
 
                 new_node_weights.push( weight - (gradient_w * lr) );
                 zero_node_gradients_w.push(0.);
             };
 
-            let bias = self.biases.get(node_out_index);
-            let gradient_b = self.gradients_b.get(node_out_index);
+            let bias: f32 = self.biases.get(node_out_index).expect("Index out of bounds");
+            let gradient_b: f32 = self.gradients_b.get(node_out_index).expect("Index out of bounds");
 
             new_node_biases = bias - (gradient_b * lr);
             zero_node_gradients_b = 0.;
@@ -138,7 +140,8 @@ impl Dense {
 
     #[func]
     fn forward(&mut self, x:PackedFloat32Array,) -> PackedFloat32Array {
-        assert!(x.len() == self.in_features as usize, "Error: The size of the input data doesn't match the expected input features for the layer.");
+        assert!(x.len() == self.in_features as usize,
+            "Error: The size of the input data doesn't match the expected input features for the layer.");
 
         self.inputs = x;
         self.outputs = PackedFloat32Array::new();
@@ -146,15 +149,15 @@ impl Dense {
         let mut output = PackedFloat32Array::new();
 
         for node_weights_index in 0..self.weights.len() {
-            let node_weights = self.weights.get(node_weights_index);
+            let node_weights: PackedFloat32Array = self.weights.get(node_weights_index).expect("Index out of bounds");
             let mut node_output: f32 = 0.;
 
             for weight_index in 0..node_weights.len() {
-                let weight: f32 = node_weights.get(weight_index);
+                let weight: f32 = node_weights.get(weight_index).expect("Index out of bounds");
 
-                node_output += self.inputs.get(weight_index) * weight;
+                node_output += self.inputs.get(weight_index).expect("Index out of bounds") * weight;
             }
-            node_output += self.biases.get(node_weights_index);
+            node_output += self.biases.get(node_weights_index).expect("Index out of bounds");
 
             output.push(node_output);
         }
@@ -167,16 +170,16 @@ impl Dense {
         let mut grad_norm: f32 = 0.;
 
         for i in 0..self.gradients_w.len(){
-            let node_grad_weights: PackedFloat32Array = self.gradients_w.get(i);
+            let node_grad_weights: PackedFloat32Array = self.gradients_w.get(i).expect("Index out of bounds");
 
             for j in 0..node_grad_weights.len() {
-                let grad_weight: f32 = node_grad_weights.get(j);
+                let grad_weight: f32 = node_grad_weights.get(j).expect("Index out of bounds");
 
                 grad_norm += grad_weight * grad_weight;
                 
             }
 
-            let grad_bias: f32 = self.gradients_b.get(i);
+            let grad_bias: f32 = self.gradients_b.get(i).expect("Index out of bounds");
 
             grad_norm += grad_bias * grad_bias;
 
@@ -192,17 +195,17 @@ impl Dense {
         let mut norm_grad_biases: PackedFloat32Array = PackedFloat32Array::new();
 
         for i in 0..self.gradients_w.len() {
-            let node_grad_weights: PackedFloat32Array = self.gradients_w.get(i);
+            let node_grad_weights: PackedFloat32Array = self.gradients_w.get(i).expect("Index out of bounds");
 
             let mut norm_row_grads: PackedFloat32Array = PackedFloat32Array::new();  //row of the weights
 
             for j in 0..node_grad_weights.len() {
-                let weight_grad: f32 = node_grad_weights.get(j);
+                let weight_grad: f32 = node_grad_weights.get(j).expect("Index out of bounds");
 
                 norm_row_grads.push(factor * weight_grad);
                 
             }
-            let bias_grad: f32 = self.gradients_b.get(i);
+            let bias_grad: f32 = self.gradients_b.get(i).expect("Index out of bounds");
 
             norm_grad_weights.push(norm_row_grads);
             norm_grad_biases.push(factor * bias_grad)
