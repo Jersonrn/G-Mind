@@ -4,9 +4,10 @@ extends Node
 var xx = [-40., -20.,  0., 20., 40.,  60.,  80.]#Celsius
 var yy = [-40.,  -4., 32., 68., 104., 140., 176.]#Fahrenheit
 
+var seed = hash("G-Mind")
 
 var Net = Sequential.new([
-	Dense.create(1, 1),
+	Dense.create(1, 1, self.seed),
 	])
 
 

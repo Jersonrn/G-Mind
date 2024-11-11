@@ -26,19 +26,20 @@ enum Tools {
 
 var dragging = false
 
+var seed = hash("G-Mind")
 
 var model = Sequential.new([
-	Dense.create(2, 15),
+	Dense.create(2, 15, self.seed),
 	LeakyRelu.new(),
-	Dense.create(15, 15),
+	Dense.create(15, 15, self.seed),
 	LeakyRelu.new(),
-	Dense.create(15, 15),
+	Dense.create(15, 15, self.seed),
 	LeakyRelu.new(),
-	Dense.create(15, 15),
+	Dense.create(15, 15, self.seed),
 	LeakyRelu.new(),
-	Dense.create(15, 15),
+	Dense.create(15, 15, self.seed),
 	LeakyRelu.new(),
-	Dense.create(15, 1),
+	Dense.create(15, 1, self.seed),
 	LeakyRelu.new(),
 	])
 
