@@ -1,5 +1,6 @@
 extends Node
 
+var seed = hash("G-Mind")
 
 var x = Tensor.new([8, 9])
 var y = Tensor.new([3])
@@ -20,7 +21,7 @@ var gb: PackedFloat32Array = [0., 0., 0.]
 
 
 var Net = Sequential.new([
-	Dense.create(3, 1),
+	Dense.create(3, 1, self.seed),
 	Sigmoid.new(),
 	Dense.from_data(2, 3, w, b, gw, gb),
 	LeakyRelu.new(0.1)

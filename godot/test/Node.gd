@@ -1,5 +1,7 @@
 extends Node
 
+var seed = hash("G-Mind")
+
 var new_weights=[[-0.34063065, -0.8958533], [0.76431787, -0.82561517], [0.9294969, 0.24996507]]
 var weights = Array([ 
 	PackedFloat32Array([-0.10176134, 0.9617566]),
@@ -9,7 +11,7 @@ var weights = Array([
 	])
 var biases = PackedFloat32Array([0.037294745, -0.07986778, -0.32146078])
 
-var dense = Dense.create(2, 3)
+var dense = Dense.create(2, 3, self.seed)
 
 
 var x := Array([8., 9.])
