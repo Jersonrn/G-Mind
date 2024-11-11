@@ -3,10 +3,8 @@ name = "g-mind"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+crate-type = ["cdylib"]  # Compile this crate to a dynamic C library.
 
 [dependencies]
-godot = { git = "https://github.com/godot-rust/gdext", brach = "master" }
-
-[lib]
-crate-type = ["cdylib"]
+godot = "0.1.3"
