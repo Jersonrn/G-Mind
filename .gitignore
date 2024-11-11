@@ -3,5 +3,7 @@
 ./godot/lib
 
 # Rust
-/rust/g-mind/target
-/rust/g-mind/Cargo.lock
+/rust/target
+/rust/Cargo.lock
+
+lib_g-mind.tar
