@@ -1,1 +1,1 @@
-cp target/debug/libg_mind.so ../../godot/lib
+cp target/debug/libg_mind.so ../godot/lib
