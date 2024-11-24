@@ -52,3 +52,34 @@ func save_data(path: String, what: Dictionary, append: bool = false):
 
 	var json_string = JSON.stringify(data)
 	save_data.store_line(json_string)
+
+func min_max(data):
+	var n = data.size()
+	assert(n > 0,"The size of 'data' must be > 0")
+
+	if n == 1:
+		return [ data[0], data[0] ]
+
+	var min_val = 0
+	var max_val = 0
+
+	if data[0] < data[1]:
+		min_val = data[0]
+		max_val = data[1]
+	else:
+		min_val = data[1]
+		max_val = data[0]
+	
+	for i in range(0, n, 2):
+		if i + 1 < n:
+			if data[i] < data[i + 1]:
+				min_val = min(data[i], min_val)
+				max_val = max(data[i + 1], max_val)
+			else:
+				min_val = min(data[i + 1], min_val)
+				max_val = max(data[i], max_val)
+		else:
+			min_val = min(data[i], min_val)
+			max_val = max(data[i], max_val)
+
+	return [min_val, max_val]
